@@ -31,7 +31,13 @@ jobs:
         run: go mod download
 
       - name: Build
-        run: go build -o dex-cli ./...
+        shell: bash
+        run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            go build -o dex-cli.exe .
+          else
+            go build -o dex-cli .
+          fi
 
       - name: Test build output
         shell: bash
