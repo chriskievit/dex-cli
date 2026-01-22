@@ -20,9 +20,34 @@ var showConfigCmd = &cobra.Command{
 	RunE:  runShowConfig,
 }
 
+var setConfigCmd = &cobra.Command{
+	Use:   "set",
+	Short: "Set configuration values",
+	Long:  "Set configuration values in ~/.dex-cli/config.yaml",
+}
+
+var setProjectCmd = &cobra.Command{
+	Use:   "project [value]",
+	Short: "Set the project configuration value",
+	Long:  "Set the Azure DevOps project name in the configuration",
+	Args:  cobra.ExactArgs(1),
+	RunE:  runSetProject,
+}
+
+var setRepoCmd = &cobra.Command{
+	Use:   "repo [value]",
+	Short: "Set the repository configuration value",
+	Long:  "Set the Azure DevOps repository name in the configuration",
+	Args:  cobra.ExactArgs(1),
+	RunE:  runSetRepo,
+}
+
 func init() {
 	rootCmd.AddCommand(configCmd)
 	configCmd.AddCommand(showConfigCmd)
+	configCmd.AddCommand(setConfigCmd)
+	setConfigCmd.AddCommand(setProjectCmd)
+	setConfigCmd.AddCommand(setRepoCmd)
 }
 
 func runShowConfig(cmd *cobra.Command, args []string) error {
@@ -47,4 +72,46 @@ func formatValue(value string) string {
 		return "(not set)"
 	}
 	return value
+}
+
+func runSetProject(cmd *cobra.Command, args []string) error {
+	value := args[0]
+	if value == "" {
+		return fmt.Errorf("project value cannot be empty")
+	}
+
+	cfg, err := config.Load()
+	if err != nil {
+		return fmt.Errorf("failed to load config: %w", err)
+	}
+
+	cfg.Project = value
+
+	if err := config.Save(cfg); err != nil {
+		return fmt.Errorf("failed to save config: %w", err)
+	}
+
+	fmt.Printf("Project set to: %s\n", value)
+	return nil
+}
+
+func runSetRepo(cmd *cobra.Command, args []string) error {
+	value := args[0]
+	if value == "" {
+		return fmt.Errorf("repository value cannot be empty")
+	}
+
+	cfg, err := config.Load()
+	if err != nil {
+		return fmt.Errorf("failed to load config: %w", err)
+	}
+
+	cfg.Repository = value
+
+	if err := config.Save(cfg); err != nil {
+		return fmt.Errorf("failed to save config: %w", err)
+	}
+
+	fmt.Printf("Repository set to: %s\n", value)
+	return nil
 }

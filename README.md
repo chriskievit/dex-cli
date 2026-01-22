@@ -63,7 +63,7 @@ repository: myrepo
 default_reviewer: ""
 ```
 
-Edit this file to set your default project and repository.
+You can set configuration values using the `config set` commands, or edit the file directly.
 
 ## Usage
 
@@ -85,6 +85,12 @@ dex-cli auth logout
 ```bash
 # Show current configuration
 dex-cli config show
+
+# Set project configuration value
+dex-cli config set project myproject
+
+# Set repository configuration value
+dex-cli config set repo myrepository
 ```
 
 ### Branch Management
