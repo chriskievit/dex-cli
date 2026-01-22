@@ -93,6 +93,9 @@ dex-cli config set project myproject
 
 # Set repository configuration value
 dex-cli config set repo myrepository
+
+# Set default reviewer configuration value
+dex-cli config set reviewer username@example.com
 ```
 
 ### Branch Management

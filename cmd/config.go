@@ -42,12 +42,21 @@ var setRepoCmd = &cobra.Command{
 	RunE:  runSetRepo,
 }
 
+var setReviewerCmd = &cobra.Command{
+	Use:   "reviewer [value]",
+	Short: "Set the default reviewer configuration value",
+	Long:  "Set the default reviewer for pull requests in the configuration",
+	Args:  cobra.ExactArgs(1),
+	RunE:  runSetReviewer,
+}
+
 func init() {
 	rootCmd.AddCommand(configCmd)
 	configCmd.AddCommand(showConfigCmd)
 	configCmd.AddCommand(setConfigCmd)
 	setConfigCmd.AddCommand(setProjectCmd)
 	setConfigCmd.AddCommand(setRepoCmd)
+	setConfigCmd.AddCommand(setReviewerCmd)
 }
 
 func runShowConfig(cmd *cobra.Command, args []string) error {
@@ -113,5 +122,26 @@ func runSetRepo(cmd *cobra.Command, args []string) error {
 	}
 
 	fmt.Printf("Repository set to: %s\n", value)
+	return nil
+}
+
+func runSetReviewer(cmd *cobra.Command, args []string) error {
+	value := args[0]
+	if value == "" {
+		return fmt.Errorf("reviewer value cannot be empty")
+	}
+
+	cfg, err := config.Load()
+	if err != nil {
+		return fmt.Errorf("failed to load config: %w", err)
+	}
+
+	cfg.DefaultReviewer = value
+
+	if err := config.Save(cfg); err != nil {
+		return fmt.Errorf("failed to save config: %w", err)
+	}
+
+	fmt.Printf("Default reviewer set to: %s\n", value)
 	return nil
 }
