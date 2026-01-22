@@ -84,13 +84,13 @@ func runCreateBranch(cmd *cobra.Command, args []string) error {
 	}
 
 	// Get authentication token
-	token, err := auth.GetToken(org)
+	token, err := auth.GetToken(org, debug)
 	if err != nil {
 		return err
 	}
 
 	// Create Azure DevOps client
-	client := azdo.NewClient(org, token)
+	client := azdo.NewClient(org, token, debug)
 
 	// Fetch work item to get the type
 	if debug {

@@ -3,6 +3,7 @@ package azdo
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"strings"
 )
 
@@ -14,17 +15,29 @@ type WorkItem struct {
 
 // GetWorkItem retrieves a work item by ID
 func (c *Client) GetWorkItem(id int) (*WorkItem, error) {
-	url := fmt.Sprintf("%s/%s/_apis/wit/workitems/%d?api-version=%s", baseURL, c.organization, id, apiVersion)
+	// Properly encode the organization name in the URL path
+	orgEncoded := url.PathEscape(c.organization)
+	apiURL := fmt.Sprintf("%s/%s/_apis/wit/workitems/%d?api-version=%s", baseURL, orgEncoded, id, apiVersion)
 
-	respBody, err := c.doRequest("GET", url, nil)
+	c.debugLog("[DEBUG] Organization (original): %q\n", c.organization)
+	c.debugLog("[DEBUG] Organization (encoded): %q\n", orgEncoded)
+	c.debugLog("[DEBUG] Constructed URL: %s\n", apiURL)
+
+	respBody, err := c.doRequest("GET", apiURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get work item: %w", err)
 	}
 
+	c.debugLog("[DEBUG] Attempting to unmarshal JSON response (length: %d bytes)\n", len(respBody))
+	
 	var workItem WorkItem
 	if err := json.Unmarshal(respBody, &workItem); err != nil {
+		c.debugLog("[DEBUG] JSON Unmarshal error: %v\n", err)
+		c.debugLog("[DEBUG] Response body that failed to parse: %s\n", string(respBody))
 		return nil, fmt.Errorf("failed to parse work item response: %w", err)
 	}
+	
+	c.debugLog("[DEBUG] Successfully unmarshaled work item: ID=%d\n", workItem.ID)
 
 	return &workItem, nil
 }

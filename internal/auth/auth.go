@@ -36,7 +36,7 @@ func StoreToken(organization, token string) error {
 }
 
 // GetToken retrieves the PAT from the system keychain
-func GetToken(organization string) (string, error) {
+func GetToken(organization string, debug bool) (string, error) {
 	if organization == "" {
 		return "", fmt.Errorf("organization cannot be empty")
 	}

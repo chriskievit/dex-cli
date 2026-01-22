@@ -141,7 +141,7 @@ func runStatus(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	_, err = auth.GetToken(org)
+	_, err = auth.GetToken(org, debug)
 	if err != nil {
 		fmt.Printf("✗ Not authenticated with organization: %s\n", org)
 		fmt.Println("Run 'dex-cli auth login' to authenticate")

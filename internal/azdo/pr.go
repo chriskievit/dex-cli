@@ -3,6 +3,7 @@ package azdo
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 )
 
 // Repository represents an Azure DevOps Git repository
@@ -34,9 +35,10 @@ type CreatePRRequest struct {
 
 // GetRepository retrieves repository information by name
 func (c *Client) GetRepository(project, repoName string) (*Repository, error) {
-	url := c.buildURL(project, fmt.Sprintf("git/repositories/%s", repoName))
+	repoNameEncoded := url.PathEscape(repoName)
+	apiURL := c.buildURL(project, fmt.Sprintf("git/repositories/%s", repoNameEncoded))
 
-	respBody, err := c.doRequest("GET", url, nil)
+	respBody, err := c.doRequest("GET", apiURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get repository: %w", err)
 	}
@@ -51,9 +53,10 @@ func (c *Client) GetRepository(project, repoName string) (*Repository, error) {
 
 // CreatePullRequest creates a new pull request
 func (c *Client) CreatePullRequest(project, repoID string, req *CreatePRRequest) (*PullRequest, error) {
-	url := c.buildURL(project, fmt.Sprintf("git/repositories/%s/pullrequests", repoID))
+	repoIDEncoded := url.PathEscape(repoID)
+	apiURL := c.buildURL(project, fmt.Sprintf("git/repositories/%s/pullrequests", repoIDEncoded))
 
-	respBody, err := c.doRequest("POST", url, req)
+	respBody, err := c.doRequest("POST", apiURL, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create pull request: %w", err)
 	}
