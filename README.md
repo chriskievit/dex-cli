@@ -80,6 +80,13 @@ dex-cli auth status
 dex-cli auth logout
 ```
 
+### Configuration Commands
+
+```bash
+# Show current configuration
+dex-cli config show
+```
+
 ### Branch Management
 
 Create a new branch linked to a work item:
