@@ -2,6 +2,8 @@
 
 A secure Go-based CLI tool for managing Azure DevOps Git branches, work items, and pull requests.
 
+[![Build](https://github.com/chriskievit/dex-cli/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/chriskievit/dex-cli/actions/workflows/build.yml)
+
 ## Features
 
 - 🔐 **Secure Authentication**: Credentials stored in OS-native keychain (macOS Keychain, Windows Credential Manager, Linux Secret Service)
