@@ -21,6 +21,13 @@ var (
 	configFile = filepath.Join(configDir, "config.yaml")
 )
 
+// SetConfigDir sets a custom config directory for testing purposes
+// This should only be used in tests
+func SetConfigDir(dir string) {
+	configDir = dir
+	configFile = filepath.Join(configDir, "config.yaml")
+}
+
 // Load reads the configuration file
 func Load() (*Config, error) {
 	viper.SetConfigFile(configFile)

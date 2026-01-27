@@ -261,9 +261,36 @@ go build -o dex
 
 ### Testing
 
+The project includes comprehensive unit tests for config, git modules, and command utility functions.
+
 ```bash
+# Run all tests
 go test ./...
+
+# Run tests with coverage
+go test -cover ./...
+
+# Generate coverage report
+go test -coverprofile=coverage.out ./...
+go tool cover -html=coverage.out
+
+# Run tests for a specific package
+go test ./internal/config
+go test ./internal/git
+go test ./cmd
 ```
+
+**Test Coverage:**
+- `internal/config` - Configuration file operations
+- `internal/git` - Git operations (using temporary repositories)
+- `cmd/` - Command utility functions and handlers
+  - `generateBranchDescription` - Work item title to branch name conversion
+  - `isValidDescription` - Branch description validation
+  - `extractWorkItemFromBranch` - Work item ID extraction from branch names
+  - Config command handlers
+  - Root command initialization
+
+**Note:** Auth and Azure DevOps HTTP client modules are excluded from unit tests as they require external service dependencies.
 
 ## License
 
