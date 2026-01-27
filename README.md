@@ -132,11 +132,23 @@ dex pr create --target main --title "WIP: New feature" --draft
 
 # Specify work item manually
 dex pr create --target main --title "Fix bug" --workitem 12345
+
+# Override PR description (takes precedence over template)
+dex pr create --target main --title "Fix bug" --description "Custom description"
 ```
 
 **Smart Defaults**:
 - Source branch defaults to your current Git branch
 - Work item ID is automatically extracted from branch name if it follows the naming convention
+- PR description automatically uses a template if found (see PR Templates below)
+
+**PR Templates**:
+If no `--description` is provided, the command automatically looks for a PR template in these locations:
+- `.azuredevops/pull_request_template.md`
+- `.github/pull_request_template.md`
+- `pull_request_template.md` (repository root)
+
+If a template is found, it will be used as the PR description. You can still override it by providing `--description`.
 
 ### Work Item Commands
 

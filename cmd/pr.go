@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 
@@ -35,6 +36,10 @@ var createPRCmd = &cobra.Command{
 
 The source branch defaults to your current Git branch.
 Work item ID will be automatically extracted from the branch name if it follows the naming convention.
+If no description is provided, the command will automatically look for a PR template in:
+  - .azuredevops/pull_request_template.md
+  - .github/pull_request_template.md
+  - pull_request_template.md (repository root)
 
 Example:
   dex-cli pr create --target main --title "Add login feature"
@@ -140,12 +145,27 @@ func runCreatePR(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to get repository: %w", err)
 	}
 
+	// Load PR template if no description provided
+	description := prDesc
+	if description == "" {
+		templateDesc, err := loadPRTemplate(cwd)
+		if err != nil && debug {
+			fmt.Printf("Note: Could not load PR template: %v\n", err)
+		}
+		if templateDesc != "" {
+			description = templateDesc
+			if debug {
+				fmt.Printf("Using PR template from repository\n")
+			}
+		}
+	}
+
 	// Prepare PR request
 	prRequest := &azdo.CreatePRRequest{
 		SourceRefName: azdo.FormatRefName(source),
 		TargetRefName: azdo.FormatRefName(targetBranch),
 		Title:         prTitle,
-		Description:   prDesc,
+		Description:   description,
 		IsDraft:       isDraft,
 	}
 
@@ -192,4 +212,30 @@ func extractWorkItemFromBranch(branchName string) int {
 		}
 	}
 	return 0
+}
+
+// loadPRTemplate attempts to find and load a PR template from common locations
+// Azure DevOps supports templates in:
+// - .azuredevops/pull_request_template.md
+// - .github/pull_request_template.md (GitHub-style, also supported by Azure DevOps)
+// Returns the template content or empty string if not found
+func loadPRTemplate(repoDir string) (string, error) {
+	// Common template locations
+	templatePaths := []string{
+		filepath.Join(repoDir, ".azuredevops", "pull_request_template.md"),
+		filepath.Join(repoDir, ".github", "pull_request_template.md"),
+		filepath.Join(repoDir, "pull_request_template.md"),
+		filepath.Join(repoDir, ".azuredevops", "PULL_REQUEST_TEMPLATE.md"),
+		filepath.Join(repoDir, ".github", "PULL_REQUEST_TEMPLATE.md"),
+		filepath.Join(repoDir, "PULL_REQUEST_TEMPLATE.md"),
+	}
+
+	for _, path := range templatePaths {
+		content, err := os.ReadFile(path)
+		if err == nil {
+			return string(content), nil
+		}
+	}
+
+	return "", fmt.Errorf("no PR template found in common locations")
 }
