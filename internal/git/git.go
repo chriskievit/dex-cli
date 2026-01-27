@@ -93,10 +93,44 @@ func BranchExists(dir, branchName string) (bool, error) {
 	cmd.Dir = dir
 	err := cmd.Run()
 	if err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok && exitErr.ExitCode() == 1 {
-			return false, nil
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			// Exit codes 1 and 128 both indicate the branch doesn't exist
+			exitCode := exitErr.ExitCode()
+			if exitCode == 1 || exitCode == 128 {
+				return false, nil
+			}
 		}
 		return false, fmt.Errorf("failed to check if branch exists: %w", err)
 	}
 	return true, nil
+}
+
+// CheckoutBranch checks out an existing branch
+func CheckoutBranch(dir, branchName string) error {
+	cmd := exec.Command("git", "checkout", branchName)
+	cmd.Dir = dir
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to checkout branch %s: %w", branchName, err)
+	}
+	return nil
+}
+
+// PushBranch pushes a branch to the remote
+func PushBranch(dir, branchName string) error {
+	cmd := exec.Command("git", "push", "-u", "origin", branchName)
+	cmd.Dir = dir
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to push branch %s: %w", branchName, err)
+	}
+	return nil
+}
+
+// CreateCommit creates a commit with the given message
+func CreateCommit(dir, message string) error {
+	cmd := exec.Command("git", "commit", "--allow-empty", "-m", message)
+	cmd.Dir = dir
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to create commit: %w", err)
+	}
+	return nil
 }
