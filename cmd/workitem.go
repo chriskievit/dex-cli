@@ -75,7 +75,7 @@ func runShowWorkitem(cmd *cobra.Command, args []string) error {
 	fmt.Printf("Type:        %s\n", workItem.GetWorkItemType())
 	fmt.Printf("State:       %s\n", workItem.GetState())
 	fmt.Printf("Assigned To: %s\n", workItem.GetAssignedTo())
-	fmt.Printf("URL:         https://dev.azure.com/%s/_workitems/edit/%d\n", org, workItem.ID)
+	fmt.Printf("URL:         %s/_workitems/edit/%d\n", org, workItem.ID)
 
 	return nil
 }
