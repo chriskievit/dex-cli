@@ -101,15 +101,21 @@ jobs:
 
       - name: Build Linux binary
         run: |
-          GOOS=linux GOARCH=amd64 go build -o dex-linux-amd64 .
+          GOOS=linux GOARCH=amd64 go build -o dex .
+          zip dex-linux-amd64.zip dex
+          rm dex
           
       - name: Build macOS binary (Intel)
         run: |
-          GOOS=darwin GOARCH=amd64 go build -o dex-darwin-amd64 .
+          GOOS=darwin GOARCH=amd64 go build -o dex .
+          zip dex-darwin-amd64.zip dex
+          rm dex
           
       - name: Build macOS binary (Apple Silicon)
         run: |
-          GOOS=darwin GOARCH=arm64 go build -o dex-darwin-arm64 .
+          GOOS=darwin GOARCH=arm64 go build -o dex .
+          zip dex-darwin-arm64.zip dex
+          rm dex
           
       - name: Build Windows binary
         run: |
@@ -119,7 +125,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.tag }}
-          name: Release ${{ steps.version.outputs.version }}
+          name: ${{ steps.version.outputs.version }}
           body: |
             ## Release ${{ steps.version.outputs.version }}
             
@@ -128,14 +134,22 @@ jobs:
             Automated release from commit: ${{ github.sha }}
             
             ### Downloads
-            - **Linux (amd64)**: `dex-linux-amd64`
-            - **macOS (Intel)**: `dex-darwin-amd64`
-            - **macOS (Apple Silicon)**: `dex-darwin-arm64`
+            - **Linux (amd64)**: `dex-linux-amd64.zip` (contains `dex` binary)
+            - **macOS (Intel)**: `dex-darwin-amd64.zip` (contains `dex` binary)
+            - **macOS (Apple Silicon)**: `dex-darwin-arm64.zip` (contains `dex` binary)
             - **Windows (amd64)**: `dex-windows-amd64.exe`
+            
+            ### Installation
+            **Linux/macOS:**
+            ```bash
+            unzip dex-linux-amd64.zip  # or dex-darwin-*.zip
+            chmod +x dex
+            sudo mv dex /usr/local/bin/  # or add to your PATH
+            ```
           files: |
-            dex-linux-amd64
-            dex-darwin-amd64
-            dex-darwin-arm64
+            dex-linux-amd64.zip
+            dex-darwin-amd64.zip
+            dex-darwin-arm64.zip
             dex-windows-amd64.exe
           draft: false
           prerelease: false
