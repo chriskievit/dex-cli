@@ -188,17 +188,15 @@ dex auth login
 # 2. Check work item
 dex workitem show 12345
 
-# 3. Create branch for the work item
-dex branch create 12345 implement-new-feature
+# 3. Start work on the work item (creates branch, links to work item, and pushes to remote)
+dex workitem start 12345
 
 # 4. Make your changes, commit them
 git add .
 git commit -m "Implement new feature"
+git push
 
-# 5. Push to remote
-git push -u origin user-story/12345/implement-new-feature
-
-# 6. Create pull request
+# 5. Create pull request
 dex pr create --target main --title "Implement new feature"
 ```
 
