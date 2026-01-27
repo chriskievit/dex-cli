@@ -25,14 +25,14 @@ A secure Go-based CLI tool for managing Azure DevOps Git branches, work items, a
 ```bash
 git clone https://github.com/chriskievit/dex-cli.git
 cd dex-cli
-go build -o dex-cli
+go build -o dex
 ```
 
 Move the binary to your PATH:
 
 ```bash
 # macOS/Linux
-sudo mv dex-cli /usr/local/bin/
+sudo mv dex /usr/local/bin/
 
 # Or add to your PATH
 export PATH=$PATH:$(pwd)
@@ -45,7 +45,7 @@ export PATH=$PATH:$(pwd)
 First, authenticate with Azure DevOps:
 
 ```bash
-dex-cli auth login
+dex auth login
 ```
 
 You'll be prompted for:
@@ -73,29 +73,29 @@ You can set configuration values using the `config set` commands, or edit the fi
 
 ```bash
 # Login to Azure DevOps
-dex-cli auth login
+dex auth login
 
 # Check authentication status
-dex-cli auth status
+dex auth status
 
 # Logout (remove credentials)
-dex-cli auth logout
+dex auth logout
 ```
 
 ### Configuration Commands
 
 ```bash
 # Show current configuration
-dex-cli config show
+dex config show
 
 # Set project configuration value
-dex-cli config set project myproject
+dex config set project myproject
 
 # Set repository configuration value
-dex-cli config set repo myrepository
+dex config set repo myrepository
 
 # Set default reviewer configuration value
-dex-cli config set reviewer username@example.com
+dex config set reviewer username@example.com
 ```
 
 ### Branch Management
@@ -104,10 +104,10 @@ Create a new branch linked to a work item:
 
 ```bash
 # Create branch from default branch (main/master)
-dex-cli branch create 12345 add-login-feature
+dex branch create 12345 add-login-feature
 
 # Create branch from specific base branch
-dex-cli branch create 12345 fix-bug --from develop
+dex branch create 12345 fix-bug --from develop
 ```
 
 **Branch Naming Convention**: `{work-item-type}/{work-item-id}/{description}`
@@ -122,16 +122,16 @@ Create a pull request:
 
 ```bash
 # Create PR from current branch
-dex-cli pr create --target main --title "Add login feature"
+dex pr create --target main --title "Add login feature"
 
 # Create PR with specific source branch
-dex-cli pr create --source feature/123/login --target main --title "Add login"
+dex pr create --source feature/123/login --target main --title "Add login"
 
 # Create draft PR
-dex-cli pr create --target main --title "WIP: New feature" --draft
+dex pr create --target main --title "WIP: New feature" --draft
 
 # Specify work item manually
-dex-cli pr create --target main --title "Fix bug" --workitem 12345
+dex pr create --target main --title "Fix bug" --workitem 12345
 ```
 
 **Smart Defaults**:
@@ -143,7 +143,7 @@ dex-cli pr create --target main --title "Fix bug" --workitem 12345
 View work item details:
 
 ```bash
-dex-cli workitem show 12345
+dex workitem show 12345
 ```
 
 ## Security Features
@@ -175,7 +175,7 @@ Credentials are never:
 
 2. **PAT Expiration**: Set an expiration date for your PAT and rotate regularly
 
-3. **Logout**: Use `dex-cli auth logout` when done to remove credentials
+3. **Logout**: Use `dex auth logout` when done to remove credentials
 
 ## Examples
 
@@ -183,13 +183,13 @@ Credentials are never:
 
 ```bash
 # 1. Authenticate
-dex-cli auth login
+dex auth login
 
 # 2. Check work item
-dex-cli workitem show 12345
+dex workitem show 12345
 
 # 3. Create branch for the work item
-dex-cli branch create 12345 implement-new-feature
+dex branch create 12345 implement-new-feature
 
 # 4. Make your changes, commit them
 git add .
@@ -199,20 +199,20 @@ git commit -m "Implement new feature"
 git push -u origin user-story/12345/implement-new-feature
 
 # 6. Create pull request
-dex-cli pr create --target main --title "Implement new feature"
+dex pr create --target main --title "Implement new feature"
 ```
 
 ### Using Global Flags
 
 ```bash
 # Override organization
-dex-cli --org myotherorg workitem show 12345
+dex --org myotherorg workitem show 12345
 
 # Override project
-dex-cli --project myotherproject pr create --target main --title "Fix"
+dex --project myotherproject pr create --target main --title "Fix"
 
 # Enable debug output
-dex-cli --debug branch create 12345 test-feature
+dex --debug branch create 12345 test-feature
 ```
 
 ## Troubleshooting
@@ -223,7 +223,7 @@ Make sure you're running commands from within a Git repository directory.
 
 ### "No credentials found"
 
-Run `dex-cli auth login` to authenticate first.
+Run `dex auth login` to authenticate first.
 
 ### "Failed to get repository"
 
@@ -256,7 +256,7 @@ dex-cli/
 ### Building
 
 ```bash
-go build -o dex-cli
+go build -o dex
 ```
 
 ### Testing

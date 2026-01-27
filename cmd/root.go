@@ -16,7 +16,7 @@ var (
 
 // rootCmd represents the base command
 var rootCmd = &cobra.Command{
-	Use:   "dex-cli",
+	Use:   "dex",
 	Short: "Azure DevOps CLI tool for managing branches, work items, and pull requests",
 	Long: `DEX CLI is a secure command-line tool for Azure DevOps that helps you:
   - Create Git branches linked to work items

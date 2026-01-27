@@ -34,16 +34,16 @@ jobs:
         shell: bash
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            go build -o dex-cli.exe .
+            go build -o dex.exe .
           else
-            go build -o dex-cli .
+            go build -o dex .
           fi
 
       - name: Test build output
         shell: bash
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            test -f dex-cli.exe || (echo "dex-cli.exe not found" && exit 1)
+            test -f dex.exe || (echo "dex.exe not found" && exit 1)
           else
-            test -f dex-cli || (echo "dex-cli not found" && exit 1)
+            test -f dex || (echo "dex not found" && exit 1)
           fi
