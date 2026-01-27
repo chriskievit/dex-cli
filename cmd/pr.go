@@ -185,6 +185,8 @@ func runCreatePR(cmd *cobra.Command, args []string) error {
 	fmt.Printf("  Title: %s\n", prTitle)
 	if wiID > 0 {
 		fmt.Printf("  Work Item: #%d\n", wiID)
+	} else {
+		fmt.Printf("  ⚠ Warning: No work item linked (branch name doesn't match format or --workitem not provided)\n")
 	}
 
 	pr, err := client.CreatePullRequest(proj, repository.ID, prRequest)
